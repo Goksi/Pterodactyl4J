@@ -17,6 +17,8 @@
 package com.mattmalec.pterodactyl4j.utils.config;
 
 import com.mattmalec.pterodactyl4j.P4JInfo;
+import com.mattmalec.pterodactyl4j.client.ws.hooks.IClientListenerManager;
+import com.mattmalec.pterodactyl4j.client.ws.hooks.InterfacedClientListenerManager;
 import okhttp3.OkHttpClient;
 
 public final class SessionConfig {
@@ -25,15 +27,18 @@ public final class SessionConfig {
 
 	private final OkHttpClient httpClient;
 	private final OkHttpClient webSocketClient;
+	private final IClientListenerManager eventManager;
 	private String userAgent;
 
-	public SessionConfig(OkHttpClient httpClient, OkHttpClient webSocketClient) {
+	public SessionConfig(OkHttpClient httpClient, OkHttpClient webSocketClient, IClientListenerManager eventManager) {
 		if (httpClient == null) httpClient = new OkHttpClient();
 
 		if (webSocketClient == null) webSocketClient = new OkHttpClient();
 
+		if(eventManager == null) eventManager = new InterfacedClientListenerManager();
 		this.httpClient = httpClient;
 		this.webSocketClient = webSocketClient;
+		this.eventManager = eventManager;
 	}
 
 	public OkHttpClient getHttpClient() {
@@ -46,6 +51,10 @@ public final class SessionConfig {
 
 	public String getUserAgent() {
 		return userAgent;
+	}
+
+	public IClientListenerManager getEventManager() {
+		return eventManager;
 	}
 
 	public void setUserAgent(String userAgent) {

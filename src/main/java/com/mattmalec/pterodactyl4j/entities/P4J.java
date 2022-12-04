@@ -18,6 +18,7 @@ package com.mattmalec.pterodactyl4j.entities;
 
 import com.mattmalec.pterodactyl4j.application.entities.PteroApplication;
 import com.mattmalec.pterodactyl4j.client.entities.PteroClient;
+import com.mattmalec.pterodactyl4j.client.ws.hooks.IClientListenerManager;
 import com.mattmalec.pterodactyl4j.requests.Requester;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
@@ -48,4 +49,6 @@ public interface P4J {
 	PteroClient asClient();
 
 	PteroApplication asApplication();
+
+	IClientListenerManager getEventManager();
 }
