@@ -90,6 +90,10 @@ public class WebSocketBuilder {
         return this;
     }
 
+    public IClientListenerManager getEventManager() {
+        return eventManager;
+    }
+
     /**
      * Builds a new {@link com.mattmalec.pterodactyl4j.client.managers.WebSocketManager WebSocketManager}
      * instance and retrieves a token from the panel to start the authorization process.
