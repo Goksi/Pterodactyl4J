@@ -157,4 +157,6 @@ public interface ClientServer extends Server {
 	}
 
 	ClientAllocationManager getAllocationManager();
+
+	PteroAction<ClientServer> refreshData();
 }
