@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.mattmalec.pterodactyl4j.requests.action.operator;
 
 import com.mattmalec.pterodactyl4j.PteroAction;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -50,5 +51,12 @@ public class DelayPteroAction<T> extends PteroActionOperator<T, T> {
 		} catch (InterruptedException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	@Override
+	public CompletableFuture<T> submit(boolean shouldQueue) {
+		CompletableFuture<T> future = new CompletableFuture<>();
+		executeAsync(future::complete, future::completeExceptionally);
+		return future;
 	}
 }

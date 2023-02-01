@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,8 @@ package com.mattmalec.pterodactyl4j.requests.action.operator;
 import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.exceptions.PteroException;
 import com.mattmalec.pterodactyl4j.utils.ExceptionUtils;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -62,6 +64,20 @@ public class MapErrorPteroAction<T> extends PteroActionOperator<T, T> {
 			fail(error);
 		}
 		throw new AssertionError("Unreachable");
+	}
+
+	@Override
+	public CompletableFuture<T> submit(boolean shouldQueue) {
+		return action.submit(shouldQueue).handle((value, error) -> {
+			T result = value;
+			if (error != null) {
+				error = error instanceof CompletionException && error.getCause() != null ? error.getCause() : error;
+				if (check.test(error)) {
+					result = map.apply(error);
+				} else fail(error);
+			}
+			return result;
+		});
 	}
 
 	private void fail(Throwable error) {

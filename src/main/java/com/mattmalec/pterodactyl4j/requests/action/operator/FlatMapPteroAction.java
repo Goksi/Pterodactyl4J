@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package com.mattmalec.pterodactyl4j.requests.action.operator;
 
 import com.mattmalec.pterodactyl4j.PteroAction;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -52,5 +53,11 @@ public class FlatMapPteroAction<I, O> extends PteroActionOperator<I, O> {
 	@Override
 	public O execute(boolean shouldQueue) {
 		return function.apply(action.execute(shouldQueue)).execute(shouldQueue);
+	}
+
+	@Override
+	public CompletableFuture<O> submit(boolean shouldQueue) {
+		return action.submit(shouldQueue)
+				.thenCompose((result) -> function.apply(result).submit(shouldQueue));
 	}
 }

@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.entities.P4J;
 import com.mattmalec.pterodactyl4j.exceptions.PteroException;
 import com.mattmalec.pterodactyl4j.utils.P4JLogger;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -91,10 +92,8 @@ public class PteroActionImpl<T> implements PteroAction<T> {
 
 	@Override
 	public T execute(boolean shouldQueue) {
-		Route.CompiledRoute route = finalizeRoute();
-		RequestBody data = finalizeData();
 		try {
-			return new RequestFuture<>(this, route, data, shouldQueue, deadline).join();
+			return submit(shouldQueue).join();
 		} catch (CompletionException ex) {
 			if (ex.getCause() != null) {
 				Throwable cause = ex.getCause();
@@ -102,6 +101,13 @@ public class PteroActionImpl<T> implements PteroAction<T> {
 			}
 			throw ex;
 		}
+	}
+
+	@Override
+	public CompletableFuture<T> submit(boolean shouldQueue) {
+		Route.CompiledRoute route = finalizeRoute();
+		RequestBody data = finalizeData();
+		return new RequestFuture<>(this, route, data, shouldQueue, deadline);
 	}
 
 	@Override

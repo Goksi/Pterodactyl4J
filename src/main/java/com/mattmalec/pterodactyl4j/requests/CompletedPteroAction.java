@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ package com.mattmalec.pterodactyl4j.requests;
 import com.mattmalec.pterodactyl4j.PteroAction;
 import com.mattmalec.pterodactyl4j.entities.P4J;
 import com.mattmalec.pterodactyl4j.exceptions.RateLimitedException;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class CompletedPteroAction<T> implements PteroAction<T> {
@@ -54,6 +55,15 @@ public class CompletedPteroAction<T> implements PteroAction<T> {
 			throw new IllegalStateException(error);
 		}
 		return value;
+	}
+
+	@Override
+	public CompletableFuture<T> submit(boolean shouldQueue) {
+		CompletableFuture<T> future = new CompletableFuture<>();
+		if (error != null) {
+			future.completeExceptionally(error);
+		} else future.complete(value);
+		return future;
 	}
 
 	@Override

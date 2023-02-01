@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -26,11 +26,11 @@ import java.util.function.Supplier;
 public class DeferredPteroAction<T> implements PteroAction<T> {
 
 	private final P4J api;
-	private final Supplier<? extends T> value;
+	private final Supplier<? extends T> valueSupplier;
 
-	public DeferredPteroAction(P4J api, Supplier<? extends T> value) {
+	public DeferredPteroAction(P4J api, Supplier<? extends T> valueSupplier) {
 		this.api = api;
-		this.value = value;
+		this.valueSupplier = valueSupplier;
 	}
 
 	@Override
@@ -40,12 +40,18 @@ public class DeferredPteroAction<T> implements PteroAction<T> {
 
 	@Override
 	public T execute(boolean shouldQueue) throws RateLimitedException {
-		return value.get();
+		return valueSupplier.get();
+	}
+
+	@Override
+	public CompletableFuture<T> submit(boolean shouldQueue) {
+		T value = valueSupplier.get();
+		return CompletableFuture.completedFuture(value);
 	}
 
 	@Override
 	public void executeAsync(Consumer<? super T> success, Consumer<? super Throwable> failure) {
-		CompletableFuture.supplyAsync(value, api.getSupplierPool())
+		CompletableFuture.supplyAsync(valueSupplier, api.getSupplierPool())
 				.thenAcceptAsync(success == null ? PteroAction.getDefaultSuccess() : success);
 	}
 

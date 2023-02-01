@@ -1,5 +1,5 @@
 /*
- *    Copyright 2021-2022 Matt Malec, and the Pterodactyl4J contributors
+ *    Copyright 2021-2023 Matt Malec, and the Pterodactyl4J contributors
  *
  *    Licensed under the Apache License, Version 2.0 (the "License");
  *    you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ import com.mattmalec.pterodactyl4j.requests.PteroActionImpl;
 import com.mattmalec.pterodactyl4j.requests.action.operator.*;
 import com.mattmalec.pterodactyl4j.utils.Checks;
 import java.time.Duration;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
@@ -110,6 +111,12 @@ public interface PteroAction<T> {
 	 * @return The response value
 	 **/
 	T execute(boolean shouldQueue) throws RateLimitedException;
+
+	default CompletableFuture<T> submit() {
+		return submit(true);
+	}
+
+	CompletableFuture<T> submit(boolean shouldQueue);
 
 	/**
 	 * Submits a Request for execution.
