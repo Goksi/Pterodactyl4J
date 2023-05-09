@@ -169,7 +169,8 @@ public class PteroApplicationImpl implements PteroApplication {
 				(response, request) -> new ApplicationEggImpl(response.getObject(), this));
 	}
 
-	protected PteroAction<ApplicationEgg> retrieveEggById(String nest, String egg) {
+	@Override
+	public PteroAction<ApplicationEgg> retrieveEggById(String nest, String egg) {
 		return PteroActionImpl.onRequestExecute(
 				api,
 				Route.Nests.GET_EGG.compile(nest, egg),

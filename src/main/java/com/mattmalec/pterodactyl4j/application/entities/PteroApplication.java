@@ -389,6 +389,8 @@ public interface PteroApplication {
 	 */
 	PteroAction<ApplicationEgg> retrieveEggById(Nest nest, String id);
 
+	PteroAction<ApplicationEgg> retrieveEggById(String nest, String id);
+
 	/**
 	 * Retrieves an individual ApplicationEgg represented by the provided {@link com.mattmalec.pterodactyl4j.application.entities.Nest Nest} and id from Pterodactyl instance
 	 * <br>This requires an <b>Application API key</b> with the <b>Nests</b> and <b>Eggs</b> permissions with <b>Read</b> access.
