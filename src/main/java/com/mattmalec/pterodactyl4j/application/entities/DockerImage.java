@@ -16,6 +16,14 @@
 
 package com.mattmalec.pterodactyl4j.application.entities;
 
+/**
+ * Represents a Pterodactyl {@link com.mattmalec.pterodactyl4j.application.entities.DockerImage DockerImage}.
+ *
+ * <br> This should contain all information provided from the {@link ApplicationEgg ApplicationEgg} instance about
+ * available Docker images.
+ *
+ * @see ApplicationEgg#getDockerImages()
+ */
 public interface DockerImage {
 	String getName();
 
