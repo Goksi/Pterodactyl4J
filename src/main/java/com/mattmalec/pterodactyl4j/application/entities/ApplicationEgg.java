@@ -75,7 +75,7 @@ public interface ApplicationEgg extends Egg, ISnowflake {
 	String getDockerImage();
 
 	/**
-	 * The list of all Docker images associated with ApplicationEgg
+	 * The list of all Docker images associated with the ApplicationEgg
 	 *
 	 * @return {@link java.util.List List} of {@link DockerImage DockerImage}
 	 */
